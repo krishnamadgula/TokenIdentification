@@ -1,3 +1,4 @@
+import numpy
 import re
 import string
 keywords=["auto",	"double",	"int"	,"struct"
@@ -25,8 +26,8 @@ if __name__ == '__main__':
         l[i]=string.join(l[i],'')
         m=l[i]
         tempTokens=re.split(' ',l[i])
-        for z in range (len(tempTokens)):
-            print tempTokens[z]
+        #for z in range (len(tempTokens)):
+         #   print tempTokens[z]
 
         if (re.search("[#][a-z]*[<][a-z]*[.][h][>]",l[i]) != None):
             a.update({l[i]:'header'})
@@ -36,24 +37,30 @@ if __name__ == '__main__':
         else :
 
 
-            for x in range(len(keywords)):
-                flag=[0]*len(tempTokens)
-                for k in range(len(tempTokens)):
+
+
+            flag=numpy.zeros(len(tempTokens))
+            for k in range(len(tempTokens)):
+
+                for x in range(len(keywords)):
 
                     if(keywords[x]==tempTokens[k]):
-                        a.update({tempTokens[k]:"keyword"})
                         flag[k]=1
-            for x in range(len(keywords)):
-                for k in range(len(tempTokens)):
-                    if(flag[k]!=1):
-                        if(re.search("^[^0-9a-zA-Z]",tempTokens[k])!=None):
-                            a.update({tempTokens[k]:"operator"})
-                        elif(re.search("[a-zA-Z][a-zA-Z0-9]*[(].*[)]",tempTokens[k])!=None):
-                            a.update({tempTokens[k]:"functtion"})
-                        elif(re.search("([0-9]+|\'.*\')",tempTokens[k])!=None):
-                            a.update({tempTokens[k]:"constant"})
-                        else:
-                            a.update({tempTokens[k]:"identifier"})
+                        a.update({tempTokens[k]:"keyword"})
+
+
+
+            print flag.shape,flag
+            for k in range(len(tempTokens)):
+                if(flag[k]!=1):
+                    if(re.search("^[^0-9a-zA-Z]",tempTokens[k])!=None):
+                        a.update({tempTokens[k]:"operator"})
+                    elif(re.search("[a-zA-Z][a-zA-Z0-9]*[(].*[)]",tempTokens[k])!=None):
+                        a.update({tempTokens[k]:"functtion"})
+                    elif(re.search("([0-9]+|\'.*\')",tempTokens[k])!=None):
+                        a.update({tempTokens[k]:"constant"})
+                    else:
+                        a.update({tempTokens[k]:"identifier"})
 
 
     print l,'\n',a,'\n'
